@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Executive Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/dark.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+  <header>
+    <h1>Executive Dashboard</h1>
+    <span id="avg-ticket" class="badge">avg ticket: --</span>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Revenue by month</h2>
+      <canvas id="revenueChart"></canvas>
+    </section>
+    <section class="card">
+      <h2>Ranking by consultant</h2>
+      <canvas id="rankingChart"></canvas>
+    </section>
+  </main>
+
+  <script>
+    async function loadDashboard() {
+      const res = await fetch("/api/kpis");
+      const data = await res.json();
+
+      document.getElementById("avg-ticket").textContent =
+        "avg ticket: " + data.average_ticket.toLocaleString("en-US", { style: "currency", currency: "BRL" });
+
+      new Chart(document.getElementById("revenueChart"), {
+        type: "line",
+        data: {
+          labels: Object.keys(data.revenue_by_month),
+          datasets: [{ label: "Revenue", data: Object.values(data.revenue_by_month) }],
+        },
+      });
+
+      new Chart(document.getElementById("rankingChart"), {
+        type: "bar",
+        data: {
+          labels: data.ranking.map((r) => r.consultant),
+          datasets: [{ label: "Total", data: data.ranking.map((r) => r.total) }],
+        },
+      });
+    }
+    loadDashboard();
+  </script>
+</body>
+</html>
