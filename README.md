@@ -1,17 +1,10 @@
 # flask-chartjs-dashboard
 
-A server-side-rendered executive dashboard: **Flask computes and
-aggregates the KPIs**, the page just fetches a small JSON payload and
-draws it with Chart.js. No SPA, no build step, no client-side data layer
-— matches the "dashboard executivo em modo escuro" pattern used for a
-commercial funnel/BI portal.
+An executive dashboard where Flask does the aggregation and the page only draws the result. The browser fetches a small JSON payload and renders it with Chart.js, in a dark layout. There is no SPA framework and no build step.
 
-## Why server-side aggregation
+## Why aggregate on the server
 
-Keeping revenue-by-month, ranking, and ticket-average calculations in
-Python (`kpis.py`) instead of in the browser means the same functions are
-unit-tested and reusable from a CLI report, a scheduled export, or the
-dashboard — the frontend only renders.
+Revenue by month, consultant ranking and average ticket live in `kpis.py` as plain Python functions. That way they have unit tests and can be reused by a CLI report or a scheduled export, and the frontend only renders.
 
 ## Run it
 
@@ -25,10 +18,10 @@ flask --app app run
 
 ```
 dashboard_app/
-  kpis.py           # pure functions: revenue_by_month, ranking_by_consultant, average_ticket
-  views.py          # blueprint: "/" renders the page, "/api/kpis" serves JSON
+  kpis.py           # revenue_by_month, ranking_by_consultant, average_ticket
+  views.py          # "/" renders the page, "/api/kpis" serves the JSON
   templates/
-    dashboard.html  # dark-mode layout + Chart.js
+    dashboard.html  # dark layout + Chart.js
   static/css/dark.css
 ```
 
@@ -42,4 +35,4 @@ ruff check .
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
